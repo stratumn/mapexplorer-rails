@@ -1,0 +1,42 @@
+{
+  "name": "mapexplorer-core",
+  "description": "Core library for building Map Explorer components",
+  "main": [
+    "dist/mapexplorer-core.js",
+    "assets/stylesheets/mapexplorer-core.scss"
+  ],
+  "authors": [
+    "Stratumn Team"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "stratumn",
+    "lib",
+    "blockchain",
+    "mapexplorer",
+    "chainscript"
+  ],
+  "homepage": "https://github.com/stratumn/mapexplorer-core",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src"
+  ],
+  "dependencies": {
+    "d3": "^4.1.1",
+    "stratumn-sdk": "alpha"
+  },
+  "_release": "11c284f6ba",
+  "_resolution": {
+    "type": "branch",
+    "branch": "alpha",
+    "commit": "11c284f6ba88c384424b2e1523881e994d6fdb6a"
+  },
+  "_source": "https://github.com/stratumn/mapexplorer-core.git",
+  "_target": "alpha",
+  "_originalSource": "mapexplorer-core",
+  "_direct": true
+}

@@ -1,0 +1,75 @@
+<script id="segment-template" type="text/x-jsrender">
+    <div class="segment-container">
+        <div class="title flex-row">
+            <div>
+                <h1>Segment</h1>
+                <h2>{{: segment.meta.linkHash }}</h2>
+            </div>
+            <span class="flex"></span>
+            <a href="#" class="close">&times;</a>
+        </div>
+        <div class="body flex-row">
+            <div class="menu">
+                <ul>
+                    <li class={{: (segment.show('state') ? 'active ' : '') + 'nav-link' }} data-target="state">State</li>
+                    <li class={{: (segment.show('link') ? 'active ' : '') + 'nav-link' }} data-target="link">Link</li>
+                    <li class={{: (segment.show('evidence') ? 'active ' : '') + 'nav-link' }} data-target="evidence">Evidence</li>
+                    <li class={{: (segment.show('json') ? 'active ' : '') + 'nav-link' }} data-target="json">JSON</li>
+                </ul>
+            </div>
+            <div class="content flex-grow">
+                {{if segment.show('state')}}
+                    <pre>{{:~json(segment.link.state)}}</pre>
+                {{/if}}
+                {{if segment.show('link')}}
+                    <div class="link">
+                        <h4>Map ID</h4>
+                        <p>{{: segment.link.meta.mapId}}</p>
+
+                        <h4>Agent Hash</h4>
+                        <p>{{: segment.link.meta.agentHash}}</p>
+
+                        <h4>State Hash</h4>
+                        <p>{{: segment.link.meta.stateHash}}</p>
+
+                        <h4>Previous Link hash</h4>
+                        <p>{{: segment.link.meta.prevLinkHash}}</p>
+
+                        <h4>Action</h4>
+                        <p>{{: segment.link.meta.action }}({{:~argsFmt(segment.link.meta.arguments)}})</p>
+                    </div>
+                {{/if}}
+                {{if segment.show('evidence')}}
+                    <div class="flex-row">
+                        <div class="info">
+                            <h4>State</h4>
+                            <p>{{: segment.meta.evidence.state }}</p>
+                            {{if segment.show('evidence')}}
+                                <h4>Bitcoin Transaction</h4>
+                                <p>
+                                {{if segment.meta.evidence.transactions}}
+                                    <a target="_blank"
+                                        href={{: "https://blockchain.info/tx/" + segment.meta.evidence.transactions['bitcoin:main'] }}>View
+                                        transaction on Blockchain.info</a>
+                                {{/if}}
+                                </p>
+
+                                <h4>Merkle root</h4>
+                                <p>{{: segment.meta.evidence.merkleRoot }}</p>
+                            {{/if}}
+                        </div>
+                        {{if segment.meta.evidence.state === 'COMPLETE'}}
+                            <div class="merkle-path">
+                                <h4>Merkle Path</h4>
+                                {{:~merklePathTree(segment.meta.evidence.merklePath)}}
+                            </div>
+                        {{/if}}
+                    </div>
+                {{/if}}
+                {{if segment.show('json')}}
+                    <pre>{{:~json(segment)}}</pre>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</script>

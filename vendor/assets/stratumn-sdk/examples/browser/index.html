@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stratumn SDK for Javascript browser example</title>
+	<script type="text/javascript" src="../../dist/stratumn-sdk.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+StratumnSDK
+	.getAgent('http://localhost:3000')
+	.then(function(agent) {
+		return agent.createMap('Hello');
+	})
+	.then(function(segment) {
+		console.log(segment);
+		return segment.updateTitle('Hi');
+	})
+	.then(function(segment) {
+		console.log(segment);
+		return segment.getPrev();
+	})
+	.then(function(segment) {
+		console.log(segment);
+	})
+	.catch(function(err) {
+		console.error(err);
+	});
+
+</script>
+
+</body>
+</html>

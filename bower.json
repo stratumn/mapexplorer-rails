@@ -1,0 +1,22 @@
+{
+  "name": "mapexplorer-rails",
+  "authors": [
+    "adrien@stratumn.com"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "mapexplorer-core": "alpha",
+    "jsrender": "^0.9.83"
+  }
+}
