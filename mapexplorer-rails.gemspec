@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "Rails Engine that provides an Action View helper thats displays a Map Explorer"
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.files = Dir["{app,config,db,lib,vendor}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "turbolinks", "~> 5.0.0", ">= 5.0.0.1"
