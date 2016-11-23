@@ -6,6 +6,8 @@
 
 document.addEventListener('turbolinks:load', function() {
 
+  var segmentTemplate = $.templates("#segment-template");
+
   $('.mapexplorer').each(function() {
     var map = $(this);
     var helpers = {
@@ -27,8 +29,6 @@ document.addEventListener('turbolinks:load', function() {
     };
 
     var builder = new mapexplorerCore.ChainTreeBuilder(this);
-
-    var segmentTemplate = $.templates("#segment-template");
 
     builder.build({
       id: map.data('mapId'),

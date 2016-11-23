@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    mapexplorer-rails (0.1.0)
-      jquery-rails
+    mapexplorer-rails (1.0.0.pre.alpha)
+      jquery-rails (~> 4.2)
       rails (~> 5.0.0, >= 5.0.0.1)
-      sass-rails
-      turbolinks
+      sass-rails (~> 5.0.0)
+      turbolinks (~> 5.0.0, >= 5.0.0.1)
 
 GEM
   remote: https://rubygems.org/
