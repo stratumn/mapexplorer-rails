@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mapexplorer-rails (1.0.0.pre.alpha)
+    mapexplorer-rails (1.0.0.pre.alpha.1)
       jquery-rails (~> 4.2)
       rails (~> 5.0.0, >= 5.0.0.1)
       sass-rails (~> 5.0, >= 5.0.0)
@@ -133,4 +133,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.12.5
+   1.13.6
