@@ -4,8 +4,24 @@
 	(factory((global.mapexplorerCore = global.mapexplorerCore || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
 }(this, (function (exports,d3Hierarchy,d3Transition,d3Ease,d3Selection,d3Zoom,d3Array) { 'use strict';
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function makeLink(source, target) {
-  var margin = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+  var margin = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
   var finalTarget = target || source;
   var targetX = finalTarget.x;
@@ -21,19 +37,148 @@ function translate(x, y) {
   return "translate(" + y + ", " + x + ")";
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function parseChainscript(chainscript) {
-    return d3Hierarchy.stratify().id(function (d) {
-        return d.meta.linkHash;
-    }).parentId(function (d) {
-        return d.link.meta.prevLinkHash;
-    })(chainscript);
+  return d3Hierarchy.stratify().id(function (d) {
+    return d.meta.linkHash;
+  }).parentId(function (d) {
+    return d.link.meta.prevLinkHash;
+  })(chainscript);
 }
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -82,6 +227,22 @@ var toConsumableArray = function (arr) {
     return Array.from(arr);
   }
 };
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var margin = { top: 20, right: 120, bottom: 20, left: 120 };
 var height = 800 - margin.top - margin.bottom;
@@ -231,6 +392,22 @@ var ChainTree = function () {
   return ChainTree;
 }();
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function compactHash (hash) {
   return "" + hash.slice(0, 3) + hash.slice(hash.length - 3);
 }
@@ -301,6 +478,424 @@ return function deepmerge(target, src) {
 });
 
 var merge = interopDefault(index);
+
+var global$1 = typeof global !== "undefined" ? global :
+            typeof self !== "undefined" ? self :
+            typeof window !== "undefined" ? window : {}
+
+// shim for using process in browser
+// based off https://github.com/defunctzombie/node-process/blob/master/browser.js
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+var cachedSetTimeout = defaultSetTimout;
+var cachedClearTimeout = defaultClearTimeout;
+if (typeof global$1.setTimeout === 'function') {
+    cachedSetTimeout = setTimeout;
+}
+if (typeof global$1.clearTimeout === 'function') {
+    cachedClearTimeout = clearTimeout;
+}
+
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+function nextTick(fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+}
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+var title = 'browser';
+var platform = 'browser';
+var browser = true;
+var env = {};
+var argv = [];
+var version = ''; // empty string to avoid regexp issues
+var versions = {};
+var release = {};
+var config$1 = {};
+
+function noop() {}
+
+var on = noop;
+var addListener = noop;
+var once = noop;
+var off = noop;
+var removeListener = noop;
+var removeAllListeners = noop;
+var emit = noop;
+
+function binding(name) {
+    throw new Error('process.binding is not supported');
+}
+
+function cwd () { return '/' }
+function chdir (dir) {
+    throw new Error('process.chdir is not supported');
+};
+function umask() { return 0; }
+
+// from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
+var performance = global$1.performance || {}
+var performanceNow =
+  performance.now        ||
+  performance.mozNow     ||
+  performance.msNow      ||
+  performance.oNow       ||
+  performance.webkitNow  ||
+  function(){ return (new Date()).getTime() }
+
+// generate timestamp or delta
+// see http://nodejs.org/api/process.html#process_process_hrtime
+function hrtime(previousTimestamp){
+  var clocktime = performanceNow.call(performance)*1e-3
+  var seconds = Math.floor(clocktime)
+  var nanoseconds = Math.floor((clocktime%1)*1e9)
+  if (previousTimestamp) {
+    seconds = seconds - previousTimestamp[0]
+    nanoseconds = nanoseconds - previousTimestamp[1]
+    if (nanoseconds<0) {
+      seconds--
+      nanoseconds += 1e9
+    }
+  }
+  return [seconds,nanoseconds]
+}
+
+var startTime = new Date();
+function uptime() {
+  var currentTime = new Date();
+  var dif = currentTime - startTime;
+  return dif / 1000;
+}
+
+var process = {
+  nextTick: nextTick,
+  title: title,
+  browser: browser,
+  env: env,
+  argv: argv,
+  version: version,
+  versions: versions,
+  on: on,
+  addListener: addListener,
+  once: once,
+  off: off,
+  removeListener: removeListener,
+  removeAllListeners: removeAllListeners,
+  emit: emit,
+  binding: binding,
+  cwd: cwd,
+  chdir: chdir,
+  umask: umask,
+  hrtime: hrtime,
+  platform: platform,
+  release: release,
+  config: config$1,
+  uptime: uptime
+};
+
+var setImmediate$1 = createCommonjsModule(function (module) {
+(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof commonjsGlobal === "undefined" ? commonjsGlobal : commonjsGlobal : self));
+});
+
+interopDefault(setImmediate$1);
 
 var jsonrequest = createCommonjsModule(function (module) {
 'use strict';
@@ -646,7 +1241,7 @@ var require$$4 = Object.freeze({
   default: error$1
 });
 
-var once = createCommonjsModule(function (module) {
+var once$1 = createCommonjsModule(function (module) {
 'use strict';
 
 // A "once" utility.
@@ -662,11 +1257,11 @@ module.exports = function(fn) {
 };
 });
 
-var once$1 = interopDefault(once);
+var once$2 = interopDefault(once$1);
 
 
 var require$$0$3 = Object.freeze({
-  default: once$1
+  default: once$2
 });
 
 var index$1 = createCommonjsModule(function (module) {
@@ -886,6 +1481,22 @@ function getError(req, err) {
 
 var httpplease = interopDefault(index$1);
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function deprecated(oldFunc, newFunc) {
   if (!newFunc) {
     console.warn("WARNING: " + oldFunc + " is deprecated.");
@@ -893,6 +1504,22 @@ function deprecated(oldFunc, newFunc) {
     console.warn("WARNING: " + oldFunc + " is deprecated. Please use " + newFunc + " instead.");
   }
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 /**
  * Makes a query string.
@@ -912,6 +1539,65 @@ function makeQueryString(obj) {
 
   return '';
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+/**
+ * Calls a function that returns a Promise until a condition is reached
+ * @param {function} condition - while condition is true body will keep being called
+ * @param {function} body - a function that is repeatedly called while condition is true
+ * @returns {Promise} a Promise that resolves when the condition is no longer true
+ */
+function promiseWhile(condition, body) {
+  return new Promise(function (resolve, reject) {
+    function loop() {
+      body().then(function () {
+        // When the result of calling `condition` is no longer true, we are
+        // done.
+        if (!condition()) {
+          resolve();
+        } else {
+          loop();
+        }
+      }).catch(reject);
+    }
+
+    // Start running the loop in the next tick so that this function is
+    // completely async. It would be unexpected if `body` was called
+    // synchronously the first time.
+    setImmediate(loop);
+  });
+}
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var request = httpplease.use(json$1);
 
@@ -937,8 +1623,168 @@ function post(url, args) {
   return send('POST', url, args);
 }
 
+var asyncGenerator$1 = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+var toConsumableArray$1 = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+var DEFAULT_BATCH_SIZE = 20;
+
 function findSegments(agent) {
-  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  var options = Object.assign({}, opts);
+  if (opts.limit === -1) {
+    options.limit = options.batchSize || DEFAULT_BATCH_SIZE;
+    delete options.batchSize;
+    options.offset = 0;
+    var segments = [];
+
+    return promiseWhile(function () {
+      return segments.length === options.limit;
+    }, function () {
+      return findSegments(agent, options).then(function (newSegments) {
+        segments.push.apply(segments, toConsumableArray$1(newSegments));
+        options.offset += options.limit;
+      });
+    }).then(function () {
+      return segments;
+    });
+  }
 
   return get$1(agent.url + '/segments' + makeQueryString(opts)).then(function (res) {
     return res.body.map(function (obj) {
@@ -947,13 +1793,45 @@ function findSegments(agent) {
   });
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function getBranches(agent, prevLinkHash) {
-  var tags = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   deprecated('Agent#getBranches(agent, prevLinkHash, tags = [])', 'Agent#findSegments(agent, filter)');
 
   return findSegments(agent, { prevLinkHash: prevLinkHash, tags: tags });
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function segmentify(agent, obj) {
   Object.keys(agent.agentInfo.actions).filter(function (key) {
@@ -1006,6 +1884,22 @@ function segmentify(agent, obj) {
   return obj;
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function createMap(agent) {
   for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     args[_key - 1] = arguments[_key];
@@ -1016,19 +1910,67 @@ function createMap(agent) {
   });
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function getSegment(agent, linkHash) {
   return get$1(agent.url + '/segments/' + linkHash).then(function (res) {
     return segmentify(agent, res.body);
   });
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function getMapIds(agent) {
-  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   return get$1(agent.url + '/maps' + makeQueryString(opts)).then(function (res) {
     return res.body;
   });
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function getLink(agent, hash) {
   deprecated('Agent#getLink(agent, hash)', 'Agent#getSegment(agent, hash)');
@@ -1036,13 +1978,45 @@ function getLink(agent, hash) {
   return getSegment(agent, hash);
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function getMap(agent, mapId) {
-  var tags = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   deprecated('getMap(agent, mapId, tags = [])', 'findSegments(agent, filter)');
 
   return findSegments(agent, { mapId: mapId, tags: tags });
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 // Deprecated.
 function getAgent(url) {
@@ -1064,12 +2038,44 @@ function getAgent(url) {
   });
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function fromSegment(obj) {
   return getAgent(obj.meta.agentUrl || obj.meta.applicationLocation).then(function (agent) {
     var segment = segmentify(agent, obj);
     return { agent: agent, segment: segment };
   });
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function loadLink(obj) {
   deprecated('loadLink(obj)', 'fromSegment(obj)');
@@ -1079,6 +2085,22 @@ function loadLink(obj) {
     return segment;
   });
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function resolveLinks(segments) {
   return Promise.all(segments.map(function (segment) {
@@ -1091,12 +2113,44 @@ function resolveLinks(segments) {
   }));
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function wrap(arrayOrObject) {
   if (arrayOrObject instanceof Array) {
     return arrayOrObject;
   }
   return [arrayOrObject];
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function parseIfJson(object) {
   if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') {
@@ -1105,6 +2159,22 @@ function parseIfJson(object) {
   return object;
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function flatten(arr) {
   var _ref;
 
@@ -1112,11 +2182,43 @@ function flatten(arr) {
   return flat.some(Array.isArray) ? flatten(flat) : flat;
 }
 
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 function tagsSet(chainscript) {
   return new Set(flatten(chainscript.map(function (segment) {
     return segment.link.meta.tags;
   })));
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var defaultOptions = {
   withArgs: false,
@@ -1184,7 +2286,7 @@ var ChainTreeBuilder = function () {
     key: '_load',
     value: function _load(map) {
       return getAgent(map.applicationUrl).then(function (app) {
-        return app.findSegments({ mapId: map.id });
+        return app.findSegments({ mapId: map.id, limit: -1 });
       }).catch(function (res) {
         return console.log(res);
       });
@@ -1417,23 +2519,22 @@ module.exports = stringify
 var stringify = interopDefault(index$4);
 
 var sha256 = createCommonjsModule(function (module) {
-/*
- * js-sha256 v0.3.0
- * https://github.com/emn178/js-sha256
+/**
+ * [js-sha256]{@link https://github.com/emn178/js-sha256}
  *
- * Copyright 2014-2015, emn178@gmail.com
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * @version 0.3.2
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2014-2016
+ * @license MIT
  */
-;(function(root, undefined) {
+(function (root) {
   'use strict';
 
-  var NODE_JS = typeof(module) != 'undefined';
-  if(NODE_JS) {
+  var NODE_JS = typeof process == 'object' && process.versions && process.versions.node;
+  if (NODE_JS) {
     root = commonjsGlobal;
   }
-  var TYPED_ARRAY = typeof(Uint8Array) != 'undefined';
+  var COMMON_JS = !root.JS_SHA256_TEST && typeof module == 'object' && module.exports;
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [-2147483648, 8388608, 32768, 128];
   var SHIFT = [24, 16, 8, 0];
@@ -1448,13 +2549,13 @@ var sha256 = createCommonjsModule(function (module) {
 
   var blocks = [];
 
-  var sha224 = function(message) {
+  var sha224 = function (message) {
     return sha256(message, true);
   };
 
-  var sha256 = function(message, is224) {
-    var notString = typeof(message) != 'string';
-    if(notString && message.constructor == root.ArrayBuffer) {
+  var sha256 = function (message, is224) {
+    var notString = typeof message != 'string';
+    if (notString && message.constructor == root.ArrayBuffer) {
       message = new Uint8Array(message);
     }
 
@@ -1462,7 +2563,7 @@ var sha256 = createCommonjsModule(function (module) {
         i, j, index = 0, start = 0, bytes = 0, length = message.length,
         s0, s1, maj, t1, t2, ch, ab, da, cd, bc;
 
-    if(is224) {
+    if (is224) {
       h0 = 0xc1059ed8;
       h1 = 0x367cd507;
       h2 = 0x3070dd17;
@@ -1488,12 +2589,12 @@ var sha256 = createCommonjsModule(function (module) {
       blocks[4] = blocks[5] = blocks[6] = blocks[7] =
       blocks[8] = blocks[9] = blocks[10] = blocks[11] =
       blocks[12] = blocks[13] = blocks[14] = blocks[15] = 0;
-      if(notString) {
-        for (i = start;index < length && i < 64; ++index) {
+      if (notString) {
+        for (i = start;index < length && i < 64;++index) {
           blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
         }
       } else {
-        for (i = start;index < length && i < 64; ++index) {
+        for (i = start;index < length && i < 64;++index) {
           code = message.charCodeAt(index);
           if (code < 0x80) {
             blocks[i >> 2] |= code << SHIFT[i++ & 3];
@@ -1515,18 +2616,18 @@ var sha256 = createCommonjsModule(function (module) {
       }
       bytes += i - start;
       start = i - 64;
-      if(index == length) {
+      if (index == length) {
         blocks[i >> 2] |= EXTRA[i & 3];
         ++index;
       }
       block = blocks[16];
-      if(index > length && i < 56) {
+      if (index > length && i < 56) {
         blocks[15] = bytes << 3;
         end = true;
       }
 
       var a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
-      for(j = 16;j < 64;++j) {
+      for (j = 16;j < 64;++j) {
         // rightrotate
         t1 = blocks[j - 15];
         s0 = ((t1 >>> 7) | (t1 << 25)) ^ ((t1 >>> 18) | (t1 << 14)) ^ (t1 >>> 3);
@@ -1536,9 +2637,9 @@ var sha256 = createCommonjsModule(function (module) {
       }
 
       bc = b & c;
-      for(j = 0;j < 64;j += 4) {
-        if(first) {
-          if(is224) {
+      for (j = 0;j < 64;j += 4) {
+        if (first) {
+          if (is224) {
             ab = 300032;
             t1 = blocks[0] - 1413257819;
             h = t1 - 150054599 << 0;
@@ -1598,7 +2699,7 @@ var sha256 = createCommonjsModule(function (module) {
       h5 = h5 + f << 0;
       h6 = h6 + g << 0;
       h7 = h7 + h << 0;
-    } while(!end);
+    } while (!end);
 
     var hex = HEX_CHARS[(h0 >> 28) & 0x0F] + HEX_CHARS[(h0 >> 24) & 0x0F] +
               HEX_CHARS[(h0 >> 20) & 0x0F] + HEX_CHARS[(h0 >> 16) & 0x0F] +
@@ -1628,7 +2729,7 @@ var sha256 = createCommonjsModule(function (module) {
               HEX_CHARS[(h6 >> 20) & 0x0F] + HEX_CHARS[(h6 >> 16) & 0x0F] +
               HEX_CHARS[(h6 >> 12) & 0x0F] + HEX_CHARS[(h6 >> 8) & 0x0F] +
               HEX_CHARS[(h6 >> 4) & 0x0F] + HEX_CHARS[h6 & 0x0F];
-    if(!is224) {
+    if (!is224) {
       hex += HEX_CHARS[(h7 >> 28) & 0x0F] + HEX_CHARS[(h7 >> 24) & 0x0F] +
              HEX_CHARS[(h7 >> 20) & 0x0F] + HEX_CHARS[(h7 >> 16) & 0x0F] +
              HEX_CHARS[(h7 >> 12) & 0x0F] + HEX_CHARS[(h7 >> 8) & 0x0F] +
@@ -1637,11 +2738,11 @@ var sha256 = createCommonjsModule(function (module) {
     return hex;
   };
   
-  if(!root.JS_SHA256_TEST && NODE_JS) {
+  if (COMMON_JS) {
     sha256.sha256 = sha256;
     sha256.sha224 = sha224;
     module.exports = sha256;
-  } else if(root) {
+  } else if (root) {
     root.sha256 = sha256;
     root.sha224 = sha224;
   }
@@ -1649,6 +2750,22 @@ var sha256 = createCommonjsModule(function (module) {
 });
 
 var sha256$1 = interopDefault(sha256);
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 /**
  * Canonically hashes a json object.
@@ -1658,20 +2775,12 @@ function hashJson(obj) {
   return sha256$1(stringify(obj));
 }
 
-var _buffer;
-var _slowbuffer;
-var _INSPECT_MAX_BYTES;
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,___mod,_expor_){
-'use strict'
-
-_expor_.toByteArray = toByteArray
-_expor_.fromByteArray = fromByteArray
-
 var lookup = []
 var revLookup = []
 var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
+var inited = false;
 function init () {
+  inited = true;
   var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
   for (var i = 0, len = code.length; i < len; ++i) {
     lookup[i] = code[i]
@@ -1682,9 +2791,10 @@ function init () {
   revLookup['_'.charCodeAt(0)] = 63
 }
 
-init()
-
 function toByteArray (b64) {
+  if (!inited) {
+    init();
+  }
   var i, j, l, tmp, placeHolders, arr
   var len = b64.length
 
@@ -1741,6 +2851,9 @@ function encodeChunk (uint8, start, end) {
 }
 
 function fromByteArray (uint8) {
+  if (!inited) {
+    init();
+  }
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
@@ -1772,8 +2885,97 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],2:[function(_dereq_,___mod,_expor_){
-(function (global){
+function read (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+function write (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+var toString = {}.toString;
+
+var isArray = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -1782,15 +2984,8 @@ function fromByteArray (uint8) {
  */
 /* eslint-disable no-proto */
 
-'use strict'
 
-var base64 = _dereq_('base64-js')
-var ieee754 = _dereq_('ieee754')
-var isArray = _dereq_('isarray')
-
-_expor_.Buffer = Buffer
-_expor_.SlowBuffer = SlowBuffer
-_expor_.INSPECT_MAX_BYTES = 50
+var INSPECT_MAX_BYTES = 50
 
 /**
  * If `Buffer.TYPED_ARRAY_SUPPORT`:
@@ -1816,27 +3011,14 @@ _expor_.INSPECT_MAX_BYTES = 50
  * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
  * get the Object implementation, which is slower but behaves correctly.
  */
-Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
-  ? global.TYPED_ARRAY_SUPPORT
-  : typedArraySupport()
+Buffer.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
+  ? global$1.TYPED_ARRAY_SUPPORT
+  : true
 
 /*
  * Export kMaxLength after typed array support is determined.
  */
-_expor_.kMaxLength = kMaxLength()
-
-function typedArraySupport () {
-  try {
-    var arr = new Uint8Array(1)
-    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
-    return arr.foo() === 42 && // typed array instances can be augmented
-        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
-        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
-  } catch (e) {
-    return false
-  }
-}
-
+var _kMaxLength = kMaxLength()
 function kMaxLength () {
   return Buffer.TYPED_ARRAY_SUPPORT
     ? 0x7fffffff
@@ -1931,16 +3113,18 @@ if (Buffer.TYPED_ARRAY_SUPPORT) {
   if (typeof Symbol !== 'undefined' && Symbol.species &&
       Buffer[Symbol.species] === Buffer) {
     // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
-    Object.defineProperty(Buffer, Symbol.species, {
-      value: null,
-      configurable: true
-    })
+    // Object.defineProperty(Buffer, Symbol.species, {
+    //   value: null,
+    //   configurable: true
+    // })
   }
 }
 
 function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -2004,12 +3188,20 @@ function fromString (that, string, encoding) {
   var length = byteLength(string, encoding) | 0
   that = createBuffer(that, length)
 
-  that.write(string, encoding)
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
   return that
 }
 
 function fromArrayLike (that, array) {
-  var length = checked(array.length) | 0
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
   that = createBuffer(that, length)
   for (var i = 0; i < length; i += 1) {
     that[i] = array[i] & 255
@@ -2048,7 +3240,7 @@ function fromArrayBuffer (that, array, byteOffset, length) {
 }
 
 function fromObject (that, obj) {
-  if (Buffer.isBuffer(obj)) {
+  if (internalIsBuffer(obj)) {
     var len = checked(obj.length) | 0
     that = createBuffer(that, len)
 
@@ -2078,7 +3270,7 @@ function fromObject (that, obj) {
 }
 
 function checked (length) {
-  // Note: cannot use `length < kMaxLength` here because that fails when
+  // Note: cannot use `length < kMaxLength()` here because that fails when
   // length is NaN (which is otherwise coerced to zero.)
   if (length >= kMaxLength()) {
     throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
@@ -2087,19 +3279,13 @@ function checked (length) {
   return length | 0
 }
 
-function SlowBuffer (length) {
-  if (+length != length) { // eslint-disable-line eqeqeq
-    length = 0
-  }
-  return Buffer.alloc(+length)
-}
-
-Buffer.isBuffer = function isBuffer (b) {
+Buffer.isBuffer = isBuffer;
+function internalIsBuffer (b) {
   return !!(b != null && b._isBuffer)
 }
 
 Buffer.compare = function compare (a, b) {
-  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+  if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
     throw new TypeError('Arguments must be Buffers')
   }
 
@@ -2127,9 +3313,9 @@ Buffer.isEncoding = function isEncoding (encoding) {
     case 'utf8':
     case 'utf-8':
     case 'ascii':
+    case 'latin1':
     case 'binary':
     case 'base64':
-    case 'raw':
     case 'ucs2':
     case 'ucs-2':
     case 'utf16le':
@@ -2161,7 +3347,7 @@ Buffer.concat = function concat (list, length) {
   var pos = 0
   for (i = 0; i < list.length; ++i) {
     var buf = list[i]
-    if (!Buffer.isBuffer(buf)) {
+    if (!internalIsBuffer(buf)) {
       throw new TypeError('"list" argument must be an Array of Buffers')
     }
     buf.copy(buffer, pos)
@@ -2171,7 +3357,7 @@ Buffer.concat = function concat (list, length) {
 }
 
 function byteLength (string, encoding) {
-  if (Buffer.isBuffer(string)) {
+  if (internalIsBuffer(string)) {
     return string.length
   }
   if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
@@ -2190,9 +3376,8 @@ function byteLength (string, encoding) {
   for (;;) {
     switch (encoding) {
       case 'ascii':
+      case 'latin1':
       case 'binary':
-      case 'raw':
-      case 'raws':
         return len
       case 'utf8':
       case 'utf-8':
@@ -2265,8 +3450,9 @@ function slowToString (encoding, start, end) {
       case 'ascii':
         return asciiSlice(this, start, end)
 
+      case 'latin1':
       case 'binary':
-        return binarySlice(this, start, end)
+        return latin1Slice(this, start, end)
 
       case 'base64':
         return base64Slice(this, start, end)
@@ -2318,6 +3504,20 @@ Buffer.prototype.swap32 = function swap32 () {
   return this
 }
 
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
+  }
+  return this
+}
+
 Buffer.prototype.toString = function toString () {
   var length = this.length | 0
   if (length === 0) return ''
@@ -2326,14 +3526,14 @@ Buffer.prototype.toString = function toString () {
 }
 
 Buffer.prototype.equals = function equals (b) {
-  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
   if (this === b) return true
   return Buffer.compare(this, b) === 0
 }
 
 Buffer.prototype.inspect = function inspect () {
   var str = ''
-  var max = _expor_.INSPECT_MAX_BYTES
+  var max = INSPECT_MAX_BYTES
   if (this.length > 0) {
     str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
     if (this.length > max) str += ' ... '
@@ -2342,7 +3542,7 @@ Buffer.prototype.inspect = function inspect () {
 }
 
 Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-  if (!Buffer.isBuffer(target)) {
+  if (!internalIsBuffer(target)) {
     throw new TypeError('Argument must be a Buffer')
   }
 
@@ -2400,7 +3600,73 @@ Buffer.prototype.compare = function compare (target, start, end, thisStart, this
   return 0
 }
 
-function arrayIndexOf (arr, val, byteOffset, encoding) {
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (internalIsBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
   var indexSize = 1
   var arrLength = arr.length
   var valLength = val.length
@@ -2427,60 +3693,45 @@ function arrayIndexOf (arr, val, byteOffset, encoding) {
     }
   }
 
-  var foundIndex = -1
-  for (var i = byteOffset; i < arrLength; ++i) {
-    if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-      if (foundIndex === -1) foundIndex = i
-      if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-    } else {
-      if (foundIndex !== -1) i -= i - foundIndex
-      foundIndex = -1
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
     }
   }
 
   return -1
 }
 
-Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-  if (typeof byteOffset === 'string') {
-    encoding = byteOffset
-    byteOffset = 0
-  } else if (byteOffset > 0x7fffffff) {
-    byteOffset = 0x7fffffff
-  } else if (byteOffset < -0x80000000) {
-    byteOffset = -0x80000000
-  }
-  byteOffset >>= 0
-
-  if (this.length === 0) return -1
-  if (byteOffset >= this.length) return -1
-
-  // Negative offsets start from the end of the buffer
-  if (byteOffset < 0) byteOffset = Math.max(this.length + byteOffset, 0)
-
-  if (typeof val === 'string') {
-    val = Buffer.from(val, encoding)
-  }
-
-  if (Buffer.isBuffer(val)) {
-    // special case: looking for empty string/buffer always fails
-    if (val.length === 0) {
-      return -1
-    }
-    return arrayIndexOf(this, val, byteOffset, encoding)
-  }
-  if (typeof val === 'number') {
-    if (Buffer.TYPED_ARRAY_SUPPORT && Uint8Array.prototype.indexOf === 'function') {
-      return Uint8Array.prototype.indexOf.call(this, val, byteOffset)
-    }
-    return arrayIndexOf(this, [ val ], byteOffset, encoding)
-  }
-
-  throw new TypeError('val must be string, number or Buffer')
-}
-
 Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
   return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
 }
 
 function hexWrite (buf, string, offset, length) {
@@ -2497,7 +3748,7 @@ function hexWrite (buf, string, offset, length) {
 
   // must be an even number of digits
   var strLen = string.length
-  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
 
   if (length > strLen / 2) {
     length = strLen / 2
@@ -2518,7 +3769,7 @@ function asciiWrite (buf, string, offset, length) {
   return blitBuffer(asciiToBytes(string), buf, offset, length)
 }
 
-function binaryWrite (buf, string, offset, length) {
+function latin1Write (buf, string, offset, length) {
   return asciiWrite(buf, string, offset, length)
 }
 
@@ -2580,8 +3831,9 @@ Buffer.prototype.write = function write (string, offset, length, encoding) {
       case 'ascii':
         return asciiWrite(this, string, offset, length)
 
+      case 'latin1':
       case 'binary':
-        return binaryWrite(this, string, offset, length)
+        return latin1Write(this, string, offset, length)
 
       case 'base64':
         // Warning: maxLength not taken into account in base64Write
@@ -2610,9 +3862,9 @@ Buffer.prototype.toJSON = function toJSON () {
 
 function base64Slice (buf, start, end) {
   if (start === 0 && end === buf.length) {
-    return base64.fromByteArray(buf)
+    return fromByteArray(buf)
   } else {
-    return base64.fromByteArray(buf.slice(start, end))
+    return fromByteArray(buf.slice(start, end))
   }
 }
 
@@ -2722,7 +3974,7 @@ function asciiSlice (buf, start, end) {
   return ret
 }
 
-function binarySlice (buf, start, end) {
+function latin1Slice (buf, start, end) {
   var ret = ''
   end = Math.min(buf.length, end)
 
@@ -2936,26 +4188,26 @@ Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
 
 Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
   if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, true, 23, 4)
+  return read(this, offset, true, 23, 4)
 }
 
 Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
   if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, false, 23, 4)
+  return read(this, offset, false, 23, 4)
 }
 
 Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
   if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, true, 52, 8)
+  return read(this, offset, true, 52, 8)
 }
 
 Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
   if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, false, 52, 8)
+  return read(this, offset, false, 52, 8)
 }
 
 function checkInt (buf, value, offset, ext, max, min) {
-  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (!internalIsBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
   if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
   if (offset + ext > buf.length) throw new RangeError('Index out of range')
 }
@@ -3200,7 +4452,7 @@ function writeFloat (buf, value, offset, littleEndian, noAssert) {
   if (!noAssert) {
     checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
   }
-  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  write(buf, value, offset, littleEndian, 23, 4)
   return offset + 4
 }
 
@@ -3216,7 +4468,7 @@ function writeDouble (buf, value, offset, littleEndian, noAssert) {
   if (!noAssert) {
     checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
   }
-  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  write(buf, value, offset, littleEndian, 52, 8)
   return offset + 8
 }
 
@@ -3328,7 +4580,7 @@ Buffer.prototype.fill = function fill (val, start, end, encoding) {
       this[i] = val
     }
   } else {
-    var bytes = Buffer.isBuffer(val)
+    var bytes = internalIsBuffer(val)
       ? val
       : utf8ToBytes(new Buffer(val, encoding).toString())
     var len = bytes.length
@@ -3472,8 +4724,9 @@ function utf16leToBytes (str, units) {
   return byteArray
 }
 
+
 function base64ToBytes (str) {
-  return base64.toByteArray(base64clean(str))
+  return toByteArray(base64clean(str))
 }
 
 function blitBuffer (src, dst, offset, length) {
@@ -3488,114 +4741,61 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":1,"ieee754":3,"isarray":4}],3:[function(_dereq_,___mod,_expor_){
-_expor_.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
 
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+// the following is from is-buffer, also by Feross Aboukhadijeh and with same lisence
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+function isBuffer(obj) {
+  return obj != null && (!!obj._isBuffer || isFastBuffer(obj) || isSlowBuffer(obj))
 }
 
-_expor_.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
+function isFastBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-},{}],4:[function(_dereq_,___mod,_expor_){
-var toString = {}.toString;
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
+}
 
-___mod.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
 
-},{}],5:[function(_dereq_,___mod,_expor_){
-var buf = _dereq_('buffer');
-_buffer = buf.Buffer;
-_slowbuffer = buf.SlowBuffer;
-_INSPECT_MAX_BYTES = buf._INSPECT_MAX_BYTES;
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-},{"buffer":2}]},{},[5]);
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 function computeMerkleParent(left, right) {
   if (right) {
-    return sha256$1(_buffer.concat([new _buffer(left, 'hex'), new _buffer(right, 'hex')]));
+    return sha256$1(Buffer.concat([new Buffer(left, 'hex'), new Buffer(right, 'hex')]));
   }
   return left;
 }
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var blockCypherCache = {};
 
@@ -3639,45 +4839,35 @@ var SegmentValidator = function () {
   }, {
     key: '_validateMerklePath',
     value: function _validateMerklePath() {
-      var _this = this;
-
       var evidence = this.segment.meta.evidence;
       if (evidence) {
         if (evidence.state === 'COMPLETE') {
-          var _ret = function () {
-            var previous = _this.segment.meta.linkHash;
+          var previous = this.segment.meta.linkHash;
 
-            var error = void 0;
-            evidence.merklePath.every(function (merkleNode) {
-              if (merkleNode.left === previous || merkleNode.right === previous) {
-                var computedParent = computeMerkleParent(merkleNode.left, merkleNode.right);
+          var error = void 0;
+          evidence.merklePath.every(function (merkleNode) {
+            if (merkleNode.left === previous || merkleNode.right === previous) {
+              var computedParent = computeMerkleParent(merkleNode.left, merkleNode.right);
 
-                if (computedParent !== merkleNode.parent) {
-                  error = 'Invalid Merkle Node ' + JSON.stringify(merkleNode) + ': ' + ('computed parent: ' + computedParent);
-                  return false;
-                }
-                previous = merkleNode.parent;
-                return true;
+              if (computedParent !== merkleNode.parent) {
+                error = 'Invalid Merkle Node ' + JSON.stringify(merkleNode) + ': ' + ('computed parent: ' + computedParent);
+                return false;
               }
-              error = 'Invalid Merkle Node ' + JSON.stringify(merkleNode) + ': ' + ('previous hash (' + previous + ') not found');
-              return false;
-            });
-
-            if (error) {
-              return {
-                v: error
-              };
+              previous = merkleNode.parent;
+              return true;
             }
+            error = 'Invalid Merkle Node ' + JSON.stringify(merkleNode) + ': ' + ('previous hash (' + previous + ') not found');
+            return false;
+          });
 
-            var lastMerkleNode = evidence.merklePath[evidence.merklePath.length - 1];
-            if (lastMerkleNode.parent !== evidence.merkleRoot) {
-              return {
-                v: 'Invalid Merkle Root ' + evidence.merkleRoot + ': not found in Merkle Path'
-              };
-            }
-          }();
+          if (error) {
+            return error;
+          }
 
-          if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+          var lastMerkleNode = evidence.merklePath[evidence.merklePath.length - 1];
+          if (lastMerkleNode.parent !== evidence.merkleRoot) {
+            return 'Invalid Merkle Root ' + evidence.merkleRoot + ': not found in Merkle Path';
+          }
         }
       }
       return null;
@@ -3685,13 +4875,13 @@ var SegmentValidator = function () {
   }, {
     key: '_validateFossil',
     value: function _validateFossil() {
-      var _this2 = this;
+      var _this = this;
 
       var txId = this.segment.meta.evidence.transactions['bitcoin:main'];
       return this._getFossil(txId).then(function (res) {
         var body = JSON.parse(res.xhr.response);
         if (!body.outputs.find(function (output) {
-          return output.data_hex === _this2.segment.meta.evidence.merkleRoot;
+          return output.data_hex === _this.segment.meta.evidence.merkleRoot;
         })) {
           return 'Merkle root not found in transaction data';
         }
@@ -3716,6 +4906,22 @@ var SegmentValidator = function () {
   }]);
   return SegmentValidator;
 }();
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var ChainValidator = function () {
   function ChainValidator(chainscript) {
@@ -3749,6 +4955,22 @@ var ChainValidator = function () {
   }]);
   return ChainValidator;
 }();
+
+/*
+  Copyright 2017 Stratumn SAS. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 var margin$1 = { top: 10, right: 5, bottom: 20, left: 5 };
 var height$1 = 350 - margin$1.top - margin$1.bottom;

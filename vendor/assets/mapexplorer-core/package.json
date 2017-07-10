@@ -1,6 +1,6 @@
 {
   "name": "mapexplorer-core",
-  "version": "1.0.0-alpha",
+  "version": "1.1.4",
   "description": "Core library for building Map Explorer components",
   "main": "lib/mapexplorer-core.js",
   "module": "lib/mapexplorer-core.mjs",
@@ -15,8 +15,9 @@
     "build:npm": "rollup -c rollup.es.config.js && rollup -c rollup.umd.config.js",
     "build:bower": "rollup -c rollup.bower.config.js",
     "build": "npm run build:npm && npm run build:bower",
-    "watch": "rollup -c -w",
-    "prepublish": "npm run build:npm"
+    "watch": "rollup -c rollup.bower.config.js -w",
+    "prepublishOnly": "npm run build:npm",
+    "update-license-headers": "./update-license-headers.sh"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,7 @@
     "chainscript"
   ],
   "author": "Stratumn Team",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/stratumn/mapexplorer-core/issues"
   },
@@ -52,7 +53,6 @@
     "karma-phantomjs-launcher": "^1.0.1",
     "karma-rollup-plugin": "^0.2.2",
     "karma-should": "^1.0.0",
-    "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "mocha": "^2.4.5",
     "rimraf": "^2.5.2",
@@ -60,13 +60,13 @@
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-coffee-script": "^1.1.0",
     "rollup-plugin-commonjs": "^3.3.1",
-    "rollup-plugin-json": "^2.0.1",
+    "rollup-plugin-json": "^2.1.0",
     "rollup-plugin-node-builtins": "^1.0.7",
     "rollup-plugin-node-globals": "^1.0.6",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-watch": "^2.5.0",
     "should": "^8.2.2",
-    "sinon": "^1.17.5",
+    "xhr-mock": "^1.7.0",
     "zock": "^0.2.6"
   },
   "dependencies": {
@@ -80,6 +80,6 @@
     "deepmerge": "^0.2.10",
     "httpplease": "^0.16.4",
     "js-sha256": "^0.3.0",
-    "stratumn-sdk": "^1.2.2"
+    "stratumn-agent-client": "^1.9.0"
   }
 }

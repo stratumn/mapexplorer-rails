@@ -27,16 +27,16 @@
   ],
   "dependencies": {
     "d3": "^4.1.1",
-    "stratumn-sdk": "alpha"
+    "stratumn-agent-client": "1.9.0"
   },
-  "_release": "11c284f6ba",
+  "version": "1.1.4",
+  "_release": "1.1.4",
   "_resolution": {
-    "type": "branch",
-    "branch": "alpha",
-    "commit": "11c284f6ba88c384424b2e1523881e994d6fdb6a"
+    "type": "version",
+    "tag": "v1.1.4",
+    "commit": "b1ee02927779d88f95937688c2c0120d7cc7227b"
   },
   "_source": "https://github.com/stratumn/mapexplorer-core.git",
-  "_target": "alpha",
-  "_originalSource": "mapexplorer-core",
-  "_direct": true
+  "_target": "1.1.4",
+  "_originalSource": "mapexplorer-core"
 }

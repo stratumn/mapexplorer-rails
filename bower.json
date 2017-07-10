@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "mapexplorer-core": "alpha",
+    "mapexplorer-core": "1.1.4",
     "jsrender": "^0.9.83"
   }
 }
