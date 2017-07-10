@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/stratumn/mapexplorer-rails"
   s.summary     = "Rails Engine to display a Map Explorer"
   s.description = "Rails Engine that provides an Action View helper thats displays a Map Explorer"
-  s.license     = "MPL-2.0"
+  s.license     = "Apache-2.0"
 
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "LICENSE", "Rakefile", "README.md"]
 
