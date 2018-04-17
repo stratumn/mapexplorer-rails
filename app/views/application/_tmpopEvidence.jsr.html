@@ -1,0 +1,26 @@
+<script id="tmpop-template" type="text/x-jsrender">
+    <div>
+        <h2>TMPop evidence</h2>
+        <div class="evidence flex-row">
+            <div class="info">
+                <h4>Chain ID</h4>
+                <p>{{:provider}}</p>
+
+                <hr /> {{include tmpl="#tmpop-header-template" ~header=~evidence.proof.header ~votes=~evidence.proof.header_votes
+                ~validators=~evidence.proof.header_validator_set.validators/}}
+
+                <hr /> {{include tmpl="#tmpop-header-template" ~header=~evidence.proof.next_header ~votes=~evidence.proof.next_header_votes
+                ~validators=~evidence.proof.next_header_validator_set.validators/}}
+
+                <hr />
+
+                <h4>Validations Hash</h4>
+                <p>{{:proof.validations_hash}}</p>
+
+                <h4>Merkle Root</h4>
+                <p>{{:proof.merkle_root}}</p>
+            </div>
+            {{:~merklePathTree(~evidence.proof.merkle_root, ~evidence.proof.merkle_path)}}
+        </div>
+    </div>
+</script>

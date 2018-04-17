@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "mapexplorer/rails/engine"
+require 'mapexplorer/rails/engine'
 
 module Mapexplorer
   module Rails
-    # Your code goes here...
   end
 end

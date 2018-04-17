@@ -1,0 +1,26 @@
+<script id="tmpop-header-template" type="text/x-jsrender">
+    <div>
+        <h4>Block #</h4>
+        <p>{{:~header.height}}</p>
+
+        <h4>Time</h4>
+        <p>{{:~header.time}}</p>
+
+        {{if ~header.last_block_id}}
+        <h4>Last Block</h4>
+        <p>{{:~header.last_block_id.hash}}</p>
+        {{/if}}
+
+        <h4>App Hash</h4>
+        <p>{{:~header.app_hash}}</p>
+
+        <h4>Validators Hash</h4>
+        <p>{{:~header.validators_hash}}</p>
+
+        <h4>Validators</h4>
+        <p>{{:~validatorsAddressFromVotes(~votes)}}</p>
+
+        <h4>Expected Validators</h4>
+        <p>{{:~validatorsAddress(~validators)}}</p>
+    </div>
+</script>
