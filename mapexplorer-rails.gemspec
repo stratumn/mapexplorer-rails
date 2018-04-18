@@ -21,9 +21,9 @@ require "mapexplorer/rails/version"
 Gem::Specification.new do |s|
   s.name        = "mapexplorer-rails"
   s.version     = Mapexplorer::Rails::VERSION
-  s.authors     = ["adrien"]
-  s.email       = ["adrien@stratumn.com"]
-  s.homepage    = "https://github.com/stratumn/mapexplorer-rails"
+  s.authors     = ["Stratumn team"]
+  s.email       = ["hello@stratumn.com"]
+  s.homepage    = "https://indigocore.org"
   s.summary     = "Rails Engine to display a Map Explorer"
   s.description = "Rails Engine that provides an Action View helper thats displays a Map Explorer"
   s.license     = "Apache-2.0"

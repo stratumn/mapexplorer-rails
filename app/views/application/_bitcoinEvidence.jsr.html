@@ -1,0 +1,29 @@
+<script id="bitcoin-template" type="text/x-jsrender">
+    <div>
+        <h2>Bitcoin evidence</h2>
+        <div class="evidence flex-row">
+            <div class="info">
+                <h4>Chain</h4>
+                <p>{{:provider}}</p>
+                <div>
+                    <h4>Bitcoin Transaction</h4>
+                    <p>
+                        {{:proof.txid}}
+                        <a target="_blank" href={{:~bitcoinEvidenceUrl(~evidence)}}>
+                            View transaction on a block explorer
+                        </a>
+                    </p>
+
+                    <h4>Merkle root</h4>
+                    <p>{{:proof.batch.merkleRoot}}</p>
+                </div>
+            </div>
+            {{if ~evidence.proof.batch.merklePath.length > 0}}
+            <div class="merkle-path">
+                <h4>Merkle Path</h4>
+                {{:~merklePathTree(~evidence.proof.txid, ~evidence.proof.batch.merklePath)}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</script>

@@ -13,7 +13,11 @@
 # limitations under the License.
 
 module MapexplorerHelper
-  def mapexplorer(application_url: nil, map_id: nil, chainscript: nil)
-    render 'mapexplorer', { application_url: application_url, map_id: map_id, chainscript: chainscript }
+  def mapexplorer(agent_url: nil, process: nil, map_id: nil, chainscript: nil)
+    render 'mapexplorer',
+           agent_url: agent_url,
+           process: process,
+           map_id: map_id,
+           chainscript: chainscript
   end
 end

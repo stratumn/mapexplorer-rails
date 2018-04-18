@@ -1,0 +1,24 @@
+{
+  "name": "mapexplorer-rails",
+  "version": "0.3.0",
+  "description": "Exposes a simple view helper that displays a Map Explorer.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stratumn/mapexplorer-rails.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/stratumn/mapexplorer-rails/issues"
+  },
+  "homepage": "https://github.com/stratumn/mapexplorer-rails#readme",
+  "dependencies": {
+    "@indigocore/mapexplorer-core": "^0.3.0",
+    "jsrender": "^0.9.90"
+  }
+}

@@ -18,6 +18,8 @@ module Mapexplorer
       require 'jquery-rails'
       require 'turbolinks'
       require 'sass-rails'
+
+      config.assets.paths << File.expand_path('../../../../node_modules', __FILE__)
     end
   end
 end
